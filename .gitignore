@@ -6,6 +6,10 @@ __pycache__/
 # exclude credentials file
 dwh.cfg
 
+# Test notebooks
+aws_tests*
+L3*
+
 # C extensions
 *.so
 
