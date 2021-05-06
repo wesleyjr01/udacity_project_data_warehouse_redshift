@@ -4,10 +4,11 @@ import time
 
 def job():
     print("I'm working...")
+    return 1
 
 
-schedule.every(5).seconds.do(job)
+schedule.every(3).seconds.do(job)
 
 while True:
     schedule.run_pending()
-    # time.sleep(1)
+    time.sleep(1)

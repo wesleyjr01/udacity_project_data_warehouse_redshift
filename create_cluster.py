@@ -1,6 +1,9 @@
 import boto3
 import configparser
 import json
+import schedule
+import time
+
 
 # Load DWH Params
 config = configparser.ConfigParser()
@@ -92,7 +95,7 @@ def create_redshift_cluster(role_name=DWH_IAM_ROLE_NAME):
         print(
             (
                 "1.3 Creating Redshift Cluster with: \n"
-                f"{DWH_NUM_NODES} nodes, of type {DWH_CLUSTER_TYPE}\n"
+                f"{DWH_NUM_NODES} nodes, of type {DWH_NODE_TYPE}\n"
             )
         )
         role_arn = iam.get_role(RoleName=role_name)["Role"]["Arn"]
@@ -113,7 +116,62 @@ def create_redshift_cluster(role_name=DWH_IAM_ROLE_NAME):
         print(e)
 
 
-if __name__ == "__main__":
+def open_tcp_port_to_externally_acess_cluster(
+    cluster_name=DWH_CLUSTER_IDENTIFIER,
+    from_port=int(DWH_PORT),
+    to_port=int(DWH_PORT),
+    cidr_ip="0.0.0.0/0",
+):
+    print("1.4 Opening an incoming TPC port to acess the cluster endpoint externally.")
+    try:
+        metadata = redshift.describe_clusters(ClusterIdentifier=cluster_name)
+        redshift_metadata = metadata.get("Clusters", "No Clusters Found")[0]
+        vpc_id = redshift_metadata.get("VpcId", "No VpcId Found")
+
+        vpc = ec2.Vpc(id=vpc_id)
+        default_security_group = list(vpc.security_groups.all())[0]
+        print(default_security_group)
+
+        default_security_group.authorize_ingress(
+            GroupName=default_security_group.group_name,
+            CidrIp=cidr_ip,
+            IpProtocol="TCP",
+            FromPort=from_port,
+            ToPort=to_port,
+        )
+    except Exception as e:
+        print(e)
+
+
+def retrieve_cluster_status(cluster_name=DWH_CLUSTER_IDENTIFIER):
+    try:
+        metadata = redshift.describe_clusters(ClusterIdentifier=cluster_name)
+        redshift_metadata = metadata.get("Clusters", "No Clusters Found")[0]
+        redshift_status = redshift_metadata.get("ClusterStatus", "No Status Found")
+        return redshift_status
+    except Exception as e:
+        print(e)
+        return "Error retrieving Redshift Cluster Status."
+
+
+def check_cluster_status_repeatdly(seconds=20, status="creating"):
+    """We will check in a loop a transition change on status, when a change
+    in status happens, the loop will break."""
+    redshift_status = retrieve_cluster_status()
+    while redshift_status.lower() == status:
+        print(f"Redshift Status: {redshift_status}")
+        time.sleep(seconds)
+        redshift_status = retrieve_cluster_status()
+    print(f"Redshift Status: {redshift_status}")
+
+
+def main():
     create_iam_role()
     attach_role_policy()
     create_redshift_cluster()
+    open_tcp_port_to_externally_acess_cluster()
+    check_cluster_status_repeatdly()
+
+
+if __name__ == "__main__":
+    main()
