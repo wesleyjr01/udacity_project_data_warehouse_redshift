@@ -1,6 +1,6 @@
 import configparser
 import psycopg2
-from sql_queries import copy_table_queries, insert_table_queries
+from sql_queries import copy_table_queries, insert_table_queries, artist_table_insert
 
 
 def load_staging_tables(cur, conn):
@@ -27,7 +27,9 @@ def main():
     )
     cur = conn.cursor()
 
+    print(f"Copying s3 data into Staging Tables...")
     load_staging_tables(cur, conn)
+    print(f"Inserting data into Fact and Dimension tables from Staging Tables...")
     insert_tables(cur, conn)
 
     conn.close()

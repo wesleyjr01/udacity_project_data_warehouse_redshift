@@ -10,6 +10,12 @@ dwh.cfg
 aws_tests*
 L3*
 
+# Test txt file
+counts.txt
+
+# Test cfg file
+dwh.cfg.copy
+
 # C extensions
 *.so
 
