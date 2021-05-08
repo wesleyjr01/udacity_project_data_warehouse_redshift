@@ -8,7 +8,7 @@ config.read("dwh.cfg")
 # DROP TABLES
 
 staging_events_table_drop = "DROP TABLE IF EXISTS staging_events"
-staging_songs_table_drop = "DROP TABLE IF EXISTS stating_songs"
+staging_songs_table_drop = "DROP TABLE IF EXISTS staging_songs"
 
 # CREATE TABLES
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS staging_events(
 """
 
 staging_songs_table_create = """
-CREATE TABLE IF NOT EXISTS stating_songs(
+CREATE TABLE IF NOT EXISTS staging_songs(
     staging_songs_id INT IDENTITY(1,1),
     num_songs INT,
     artist_id VARCHAR(50),
@@ -62,7 +62,7 @@ REGION 'us-west-2';
 )
 
 staging_songs_copy = """
-COPY stating_songs
+COPY staging_songs
 FROM '{}'
 CREDENTIALS 'aws_iam_role={}'
 FORMAT AS JSON 'auto'
