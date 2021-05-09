@@ -6,13 +6,6 @@ __pycache__/
 # exclude credentials file
 dwh.cfg
 
-# Test notebooks
-aws_tests*
-L3*
-
-# Test txt file
-counts.txt
-
 # Test cfg file
 dwh.cfg.copy
 

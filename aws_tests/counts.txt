@@ -1,0 +1,15 @@
+object_1=log_data/2018/11/2018-11-01-events.json
+count_object_1=15
+check_dbeaver_notebook=OK
+
+object_2=song_data/A/A/A
+count_object_1=24
+check_dbeaver_notebook=OK
+
+object_3=log_data
+count_object_3=8056
+check_dbeaver_notebook=?
+
+object_4=song_data
+count_object_3=14896
+check_dbeaver_notebook=OK
