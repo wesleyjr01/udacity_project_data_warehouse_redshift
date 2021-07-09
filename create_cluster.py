@@ -102,7 +102,7 @@ def create_redshift_cluster(role_name=DWH_IAM_ROLE_NAME):
         redshift.create_cluster(
             # HW
             ClusterType=DWH_CLUSTER_TYPE,
-            NumberOfNodes=int(DWH_NUM_NODES),
+            # NumberOfNodes=int(DWH_NUM_NODES), # Uncomment this if ClusterType='multi-node'
             NodeType=DWH_NODE_TYPE,
             # Identifiers & Credentials
             DBName=DWH_DB,
