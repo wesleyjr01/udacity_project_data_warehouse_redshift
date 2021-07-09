@@ -1,7 +1,6 @@
 import boto3
 import configparser
 import json
-import schedule
 import time
 
 
@@ -25,30 +24,31 @@ DWH_IAM_ROLE_NAME = config.get("DWH", "DWH_IAM_ROLE_NAME")
 
 
 # Create clients for EC2, S3, IAM and Redshift
+region = "us-west-2"
 ec2 = boto3.resource(
     "ec2",
-    region_name="us-west-2",
+    region_name=region,
     aws_access_key_id=KEY,
     aws_secret_access_key=SECRET,
 )
 
 s3 = boto3.resource(
     "s3",
-    region_name="us-west-2",
+    region_name=region,
     aws_access_key_id=KEY,
     aws_secret_access_key=SECRET,
 )
 
 iam = boto3.client(
     "iam",
-    region_name="us-west-2",
+    region_name=region,
     aws_access_key_id=KEY,
     aws_secret_access_key=SECRET,
 )
 
 redshift = boto3.client(
     "redshift",
-    region_name="us-west-2",
+    region_name=region,
     aws_access_key_id=KEY,
     aws_secret_access_key=SECRET,
 )
